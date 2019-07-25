@@ -7,14 +7,14 @@ public class Cube : MonoBehaviour
     public void RandomColor() {
         Renderer renderer = GetComponent<MeshRenderer>();
         if (renderer != null) {
-            renderer.material.color = Random.ColorHSV();
+            renderer.sharedMaterial.color = Random.ColorHSV();
         }
     }
 
     public void ResetColor() {
         Renderer renderer = GetComponent<MeshRenderer>();
         if (renderer != null) {
-            renderer.material.color = Color.white;
+            renderer.sharedMaterial.color = Color.white;
         }
     }
 }
