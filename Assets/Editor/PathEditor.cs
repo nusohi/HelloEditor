@@ -6,8 +6,24 @@ using UnityEditor;
 [CustomEditor(typeof(PathCreator))]
 public class PathEditor : Editor
 {
-    PathCreator creator;
-    Path path;
+    private PathCreator creator;
+    private Path path;
+
+    public override void OnInspectorGUI() {
+        base.OnInspectorGUI();
+
+        if (GUILayout.Button("创建新曲线")) {
+            creator.CreatePath();
+            path = creator.path;
+            SceneView.RepaintAll();
+        }
+
+        if (GUILayout.Button("闭合/打开曲线")) {
+            path.ToggleClose();
+            SceneView.RepaintAll();
+        }
+
+    }
 
     private void OnSceneGUI() {
         Input();
