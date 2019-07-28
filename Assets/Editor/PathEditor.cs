@@ -32,10 +32,29 @@ public class PathEditor : Editor
 
     private void Input() {
         Event guiEvent = Event.current;
+        Vector2 mousePos = HandleUtility.GUIPointToWorldRay(guiEvent.mousePosition).origin;
+
+        // Shift + 左键 = 添加锚点
         if (guiEvent.type == EventType.MouseDown && guiEvent.button == 0 && guiEvent.shift) {
-            Vector2 mousePos = HandleUtility.GUIPointToWorldRay(guiEvent.mousePosition).origin;
             Undo.RecordObject(creator, "添加锚点");
             path.AddSegment(mousePos);
+        }
+
+        // 右键删除锚点
+        if (guiEvent.type == EventType.MouseDown && guiEvent.button == 1) {
+            float minDist = 0.05f;
+            int index = -1;
+            for (int i = 0; i < path.NumPoints; i += 3) {
+                float dst = Vector2.Distance(path[i], mousePos);
+                if (dst < minDist) {
+                    minDist = dst;
+                    index = i;
+                }
+            }
+            if (index != -1) {
+                Undo.RecordObject(creator, "删除锚点");
+                path.DeleteSegment(index);
+            }
         }
     }
 
@@ -46,7 +65,7 @@ public class PathEditor : Editor
             Vector2 pos = Handles.FreeMoveHandle(path[i], Quaternion.identity, 0.1f, Vector3.zero, Handles.CylinderHandleCap);
             if (pos != path[i]) {
                 Undo.RecordObject(creator, "移动锚点");
-                path.MovePoint(i, pos);
+                path.MovePoint(i, pos);                        
             }
         }
 

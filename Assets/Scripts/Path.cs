@@ -36,6 +36,24 @@ public class Path
         points.Add(seg);
     }
 
+    // 删除一个曲线段上的点
+    public void DeleteSegment(int index) {
+        if (NumSegments <= 2 && (isClosed || NumSegments <= 1))
+            return;
+
+        if (index == 0) {
+            if (isClosed)
+                points[points.Count - 1] = points[2];
+            points.RemoveRange(0, 3);
+        }
+        else if (index == points.Count - 1 && !isClosed) {
+            points.RemoveRange(index - 2, 3);
+        }
+        else {
+            points.RemoveRange(index - 1, 3);
+        }
+    }
+
     // 获取一个曲线段的 4 个锚点
     public Vector2[] GetPointsInSegment(int i) {
         return new Vector2[] {
