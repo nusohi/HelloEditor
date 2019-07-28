@@ -148,7 +148,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.35826808, g: 0.52344894, b: 0.7830189, a: 0}
+  m_BackGroundColor: {r: 0.5566038, g: 0.5566038, b: 0.5566038, a: 0}
   m_projectionMatrixMode: 1
   m_SensorSize: {x: 36, y: 24}
   m_LensShift: {x: 0, y: 0}
@@ -162,7 +162,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 60
+  field of view: 26.991467
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -294,19 +294,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   path:
     points:
-    - {x: 1.9803259, y: -0.021870732}
-    - {x: 2.4378657, y: 0.4754749}
-    - {x: 2.5374663, y: -0.65041924}
-    - {x: 2.9976783, y: -0.076439925}
-    - {x: 3.457889, y: 0.4975394}
-    - {x: 3.3975623, y: -0.6304344}
-    - {x: 3.8784506, y: -0.027602568}
-    - {x: 4.2635984, y: 0.45521083}
-    - {x: 4.158622, y: -0.6944852}
-    - {x: 4.612558, y: -0.09137911}
-    - {x: 4.944526, y: 0.349679}
-    - {x: 5.0326443, y: -0.65278554}
-    - {x: 5.355123, y: -0.14005488}
+    - {x: -1, y: 0}
+    - {x: -0.5, y: 0.5}
+    - {x: -0.4982204, y: -0.49644762}
+    - {x: 0.0017794892, y: 0.0035523772}
+    - {x: 0.5017794, y: 0.5035524}
+    - {x: 0.74929094, y: 0.25806323}
+    - {x: 0.99680257, y: 0.012574071}
     isClosed: 0
 --- !u!4 &1585083037
 Transform:

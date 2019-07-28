@@ -22,7 +22,6 @@ public class PathEditor : Editor
             path.ToggleClose();
             SceneView.RepaintAll();
         }
-
     }
 
     private void OnSceneGUI() {
@@ -34,13 +33,13 @@ public class PathEditor : Editor
         Event guiEvent = Event.current;
         Vector2 mousePos = HandleUtility.GUIPointToWorldRay(guiEvent.mousePosition).origin;
 
-        // Shift + 左键 = 添加锚点
+        // Shift + 左键 = 添加节点
         if (guiEvent.type == EventType.MouseDown && guiEvent.button == 0 && guiEvent.shift) {
-            Undo.RecordObject(creator, "添加锚点");
+            Undo.RecordObject(creator, "添加节点");
             path.AddSegment(mousePos);
         }
 
-        // 右键删除锚点
+        // 右键删除节点
         if (guiEvent.type == EventType.MouseDown && guiEvent.button == 1) {
             float minDist = 0.05f;
             int index = -1;
@@ -52,7 +51,7 @@ public class PathEditor : Editor
                 }
             }
             if (index != -1) {
-                Undo.RecordObject(creator, "删除锚点");
+                Undo.RecordObject(creator, "删除节点");
                 path.DeleteSegment(index);
             }
         }
