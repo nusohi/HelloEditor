@@ -11,6 +11,11 @@ public class Path
     [SerializeField]
     private bool isClosed = false;
 
+    public bool IsClosed
+    {
+        get { return isClosed; }
+    }
+
     public int NumSegments { get { return points.Count / 3; } }
     public int NumPoints { get { return points.Count; } }
 
@@ -34,6 +39,12 @@ public class Path
         points.Add(points[points.Count - 1] * 2 - points[points.Count - 2]);
         points.Add((points[points.Count - 1] + seg) / 2);
         points.Add(seg);
+    }
+
+    // 曲线段上插入点
+    public void SplitSegment(Vector2 pos, int segIndex) {
+        points.InsertRange(segIndex * 3 + 2, new Vector2[] { Vector2.zero, pos, Vector2.zero });
+        AutoSetAnchorControlPoints(segIndex * 3 + 3);
     }
 
     // 删除一个曲线段上的点
@@ -112,5 +123,29 @@ public class Path
     // index 循环
     public int LoopIndex(int i) {
         return (i + points.Count) % points.Count;
+    }
+
+    // AUTO SET
+    void AutoSetAnchorControlPoints(int anchorIndex) {
+        Vector2 dir = Vector2.zero;
+        float[] dsts = new float[2];
+
+        if (anchorIndex - 3 >= 0 || isClosed) {
+            Vector2 offset = points[LoopIndex(anchorIndex - 3)] - points[anchorIndex];
+            dir += offset.normalized;
+            dsts[0] = offset.magnitude;
+        }
+        if (anchorIndex + 3 >= 0 || isClosed) {
+            Vector2 offset = points[LoopIndex(anchorIndex + 3)] - points[anchorIndex];
+            dir -= offset.normalized;
+            dsts[1] = -offset.magnitude;
+        }
+
+        for (int i = 0; i < 2; i++) {
+            int controlIndex = anchorIndex + i * 2 - 1;
+            if (controlIndex >= 0 && controlIndex < points.Count || isClosed) {
+                points[LoopIndex(controlIndex)] = points[anchorIndex] + dir.normalized * dsts[i] * .5f;
+            }
+        }
     }
 }

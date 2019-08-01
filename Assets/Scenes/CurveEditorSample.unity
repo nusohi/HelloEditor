@@ -296,12 +296,13 @@ MonoBehaviour:
     points:
     - {x: -1, y: 0}
     - {x: -0.5, y: 0.5}
-    - {x: -0.4982204, y: -0.49644762}
-    - {x: 0.0017794892, y: 0.0035523772}
-    - {x: 0.5017794, y: 0.5035524}
-    - {x: 0.74929094, y: 0.25806323}
-    - {x: 0.99680257, y: 0.012574071}
+    - {x: 0.5, y: -0.5}
+    - {x: 1, y: 0}
     isClosed: 0
+  AnchorColor: {r: 1, g: 0, b: 0, a: 1}
+  SegmentColor: {r: 0, g: 1, b: 0, a: 1}
+  ControlLineColor: {r: 1, g: 0.59279907, b: 0, a: 1}
+  HandleSize: 0.1
 --- !u!4 &1585083037
 Transform:
   m_ObjectHideFlags: 0
