@@ -75,6 +75,8 @@ public class PathEditor : Editor
                 path.DeleteSegment(index);
             }
         }
+
+        HandleUtility.AddDefaultControl(0);     // 点击空白地方时仍选中 PathCreator
     }
 
     private void Draw() {
