@@ -19,6 +19,8 @@
 - 调整锚点，对应锚点方向跟随
 - 按住 <kbd>Ctrl</kbd> 自由调整单个锚点
 - 曲线闭合，首尾相接
+- 计算曲线的平均分割点
+- `Mesh` 的创建（`RoadCreator`）
 
 ### 部分具体实现
 
@@ -206,3 +208,53 @@ public override void OnInspectorGUI() {
 }
 ```
 
+#### 10. 用 Mesh 实现 RoadCreator
+
+在实现 `Mesh` 之前要计算**曲线的平均分割点**，在 `Path` 中 `CalEvenSpacedPoints()` 实现，通过近似计算的方法逼近正确的平均分割点，这部分没怎么看明白，先拿过来用的。
+
+获得的**平均分割点**就是曲线更细化的节点，创建 `Mesh` 就需要用这些节点来将 `Road` 分割成三角形。
+
+先计算这些三角形的**顶点**，即下图中各个节点的左右两个点，同一节点的两个三角形顶点连线与红箭头方向垂直，而红箭头的方向由图可知：
+
+- 中间节点的红箭头方向是**该节点到下一节点方向**与**上一节点到该节点方向**的向量和。
+- 两端节点的红箭头方向则是其中仅有的一个方向的表示。
+
+```c#
+for (int i = 0; i < points.Length; i++) {
+    Vector2 forward = Vector2.zero;
+
+    if (i > 0)
+        forward += points[i] - points[i - 1];
+    if (i < points.Length - 1)
+        forward += points[i + 1] - points[i];
+
+    forward.Normalize();
+}
+```
+
+得到了红箭头方向即可算得两侧顶点的坐标。
+
+```c#
+Vector2 left = new Vector2(-forward.y, forward.x);
+verts.Add(points[i] + left * RoadWidth);
+verts.Add(points[i] - left * RoadWidth);
+```
+
+![vertex](README/Verts.png)
+
+`Mesh` 还需设置这些三角形，`mesh.triangles = tris`，即每个三角形对应的三个顶点坐标的集合。下图四个三角形中第一个三角形需从 `0-2-1` 的顺序，第二个三角形从 `1-2-3` 的顺序，顺序不对三角形会正反颠倒。
+
+如果给这个 `Mesh` 加上贴图，则需要设置 `Mesh.uv` ，即对应贴图的 `UV` 坐标。原来的代码中没有第二行对 `percent` 的重新计算，实现的效果是一张贴图完整的贴满这条 `Road` ，但是闭合曲线后，首尾之间有一小段的 `UV` 坐标是完整的从`1`到`0`，导致图像压缩的很模糊。第二行代码使得整条 `Road` 的 `UV` 坐标变化变成了 `0-1-0` ，最后模糊的小段会变成`0`到`0`（变成最后一小段纯黑的路）。
+
+```c#
+float percent = i / (float)(points.Length - 1);
+percent = 1 - Mathf.Abs(percent * 2 - 1);	// 1-|2x-1| 使 x 从原来的 0->1 变成了 0->1->0
+uvs.Add(new Vector2(0, percent));
+uvs.Add(new Vector2(1, percent));
+```
+
+![triangles](README/Tris.png)
+
+计算得到 `Mesh` 的部分放在了 `RoadCreator` 类的 `CreateRoadMesh()` 中，与之对应的 `RoadEditor` 类在覆写的 `OnInspectorGUI()` 中调用 `CreateRoadMesh()` 刷新路径。
+
+![Road](README/Road.png)
